@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Prime Calculation</title>
+    <link rel="stylesheet" type="text/css" href="{{ default_static('default.css') }}">
+</head>
+<body>
+
+<h1>Calculate Prime Numbers</h1>
+<hr/>
+{% if job_id %}
+    {{ job_id }} has been launched
+{% end %}
+<form>
+    <table>
+        <tr>
+            <td>
+                start
+            </td>
+            <td>
+                <input name="start" value="1">
+            </td>
+        </tr>
+        <tr>
+            <td>
+                end
+            </td>
+            <td>
+                <input name="end" value="10000">
+            </td>
+        </tr>
+        <tr>
+            <td>
+                size
+            </td>
+            <td>
+                <input name="size" value="1000">
+            </td>
+        </tr>
+        <tr>
+            <td></td>
+            <td>
+                <input type="submit">
+            </td>
+        </tr>
+    </table>
+</form>
+
+
+</body>
+</html>
