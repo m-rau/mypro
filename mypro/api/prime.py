@@ -1,17 +1,23 @@
 from core4.api.v1.request.main import CoreRequestHandler
-from core4.api.v1.application import CoreApiContainer
 from core4.queue.helper.functool import enqueue
+from mypro.job import PrimeJob
 
 
 class PrimeHandler(CoreRequestHandler):
-
     author = "mra"
     title = "prime job handler"
 
-    def get(self):
-        return self.post()
+    async def get(self):
+        """
+        Same as :meth:`.post`
+        """
+        return await self.post()
 
-    def post(self):
+    async def post(self):
+        """
+        Identify and store prime number in mongo collection ``prime`` from
+        ``start`` to ``end`` using chunks of ``size``.
+        """
         start = self.get_argument("start", as_type=int, default=None)
         end = self.get_argument("end", as_type=int, default=None)
         size = self.get_argument("size", as_type=int, default=None)
@@ -22,18 +28,10 @@ class PrimeHandler(CoreRequestHandler):
             "end": end,
             "size": size
         }
-        job = enqueue("mypro.job.PrimeJobControl", **kwargs)
+        job = enqueue(PrimeJob, **kwargs)
         if self.wants_html():
             return self.render("templates/prime.html", job_id=str(job._id))
-        return self.redirect("http://devops:5002"
-                             "/coco/v1/jobs/poll/" + str(job._id))
+        url = await self.reverse_url("JobStream", str(job._id))
+        return self.redirect(url)
 
-class PrimeServer(CoreApiContainer):
-    rules = [
-        (r'/prime', PrimeHandler)
-    ]
-
-
-if __name__ == '__main__':
-    from core4.api.v1.tool.functool import serve
-    serve(PrimeServer)
+# http://devops:5001/core4/api/enter/bc8c3f196df700db3d1420a4d5a4d3b5?start=1&end=10000&size=500&content_type=json

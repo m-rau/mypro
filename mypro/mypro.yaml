@@ -1,2 +1,4 @@
 DEFAULT:
   mongo_database: mypro
+
+prime_collection: !connect mongodb://prime
